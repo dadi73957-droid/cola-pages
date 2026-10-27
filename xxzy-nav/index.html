@@ -58,6 +58,8 @@ header p{margin:0 auto;max-width:760px;color:#9aa6d6;text-wrap:pretty}
 .pills span.k{color:#8ef7dd;border-color:rgba(56,242,160,.3);background:rgba(56,242,160,.07)}
 .meta{margin-top:auto;font-size:11.5px;color:#7f8cba;display:flex;justify-content:space-between;gap:8px;align-items:center}
 .meta .go{color:var(--a);white-space:nowrap}
+.alt{color:#9aa6d6;white-space:nowrap;cursor:pointer;border-bottom:1px dashed rgba(255,255,255,.28);padding-bottom:1px}
+.alt:hover{color:#fff;border-bottom-color:var(--a)}
 .card:hover .go{text-shadow:0 0 10px var(--a)}
 .more{display:block;margin:32px auto 18px;padding:12px 54px;border:0;border-radius:999px;color:#fff;font-size:15px;cursor:pointer;background:linear-gradient(90deg,var(--b),var(--a));box-shadow:0 0 24px rgba(124,77,255,.5);font-family:inherit}
 .more:hover{transform:scale(1.05);box-shadow:0 0 34px rgba(0,229,255,.6)}
@@ -69,7 +71,7 @@ footer{position:relative;z-index:1;text-align:center;color:#5d6a98;padding:26px;
 <canvas id="bg"></canvas><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
 <div class="wrap">
 <header><div class="eyebrow">Digital Literacy &amp; Skills · Navigator</div><h1>全民数字素养与技能教育</h1>
-<p>按年龄、职业、内容三个维度筛选全民数字素养与技能教育资源。本页不播放视频，点击卡片跳转原网站对应页面观看。讲座收录 2026 年度。</p>
+<p>按年龄、职业、内容三个维度筛选全民数字素养与技能教育资源。图标卡片的「播放视频」指向表格中的<b>视频链接（MP4 直链）</b>；卡片上的「原站页」可跳转平台原始页面。讲座收录 2026 年度。</p>
 <div class="stats">
 <div class="stat"><b id="s1">0</b><span>资源总数</span></div>
 <div class="stat"><b id="s2">0</b><span>视频课程</span></div>
@@ -139,6 +141,7 @@ $('q').oninput=e=>{st.q=e.target.value.trim();st.page=1;render()};
 $('sort').onchange=e=>{st.sort=e.target.value;render()};
 $('reset').onclick=()=>{st.type=st.age=st.job=st.cat=st.q='';st.page=1;$('q').value='';$('sort').value='new';render()};
 $('more').onclick=()=>{st.page++;render(true)};
+$('grid').addEventListener('click',e=>{const a=e.target.closest('[data-pg]');if(!a)return;e.preventDefault();e.stopPropagation();window.open(a.getAttribute('data-pg'),'_blank','noopener')});
 function count(el,to){let n=0,s=Math.max(1,Math.ceil(to/40));const t=setInterval(()=>{n=Math.min(to,n+s);el.textContent=n;if(n>=to)clearInterval(t)},18)}
 count($('s1'),ITEMS.length);count($('s2'),ITEMS.filter(i=>i.t==='课程').length);count($('s3'),ITEMS.filter(i=>i.t==='讲座').length);
 count($('s4'),new Set(ITEMS.flatMap(i=>i.c)).size);
@@ -159,7 +162,7 @@ function render(keepScroll){
       <span class="tag ${x.t==='讲座'?'l':''}">${x.t}</span><span class="play">▶</span></div>
       <div class="bd"><h3>${esc(x.n)}</h3><p>${sub}</p>
       <div class="pills">${pills}</div>
-      <div class="meta">${right}<span class="go">前往观看 ›</span></div></div></a>`;
+      <div class="meta">${right}${x.pg&&x.u!==x.pg?`<span class="alt" data-pg="${esc(x.pg)}">原站页</span>`:''}<span class="go">${x.u!==x.pg?'播放视频 ›':'前往原站 ›'}</span></div></div></a>`;
   }).join(''):'<div class="empty">没有匹配的资源，试试放宽条件</div>';
   $('more').style.display=v.length<list.length?'block':'none';
   if(!keepScroll)window.scrollTo({top:0,behavior:'smooth'});
